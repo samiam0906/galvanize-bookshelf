@@ -9,6 +9,7 @@ const router = express.Router();
 
 // YOUR CODE HERE
 
+// READ ALL
 router.get('/books', (req, res, next) => {
   knex('books')
     .orderBy('title')
@@ -20,6 +21,7 @@ router.get('/books', (req, res, next) => {
     });
 })
 
+// READ ONE
 router.get('/books/:id', (req, res, next) => {
   const id = parseInt(req.params.id);
 
@@ -42,6 +44,7 @@ router.get('/books/:id', (req, res, next) => {
     });
 })
 
+// CREATE
 router.post('/books', (req, res, next) => {
   knex('books')
     .insert(req.body)
@@ -54,6 +57,7 @@ router.post('/books', (req, res, next) => {
     });
 })
 
+// UPDATE
 router.patch('/books/:id', (req, res, next) => {
   const id = parseInt(req.params.id);
 
@@ -62,18 +66,70 @@ router.patch('/books/:id', (req, res, next) => {
   }
 
   knex('books')
-    .where('id', req.params.id)
-    .update({title: "UPDATED TITLE"})
-    .then(data => {
-      res.sendStatus(200).send(data);
-      // const book = data[id];
-      // res.send(book);
+    .where('id', id)
+    .first() // Pulls out the first record in array of id
+    .then(book => {
+      const {title, author, genre, description, cover_url} = req.body;
+
+      const updateBook = {};
+
+      if (title) {
+        updateBook.title = title;
+      }
+
+      if (author) {
+        updateBook.author = author;
+      }
+
+      if (genre) {
+        updateBook.genre = genre;
+      }
+
+      if (description) {
+        updateBook.description = description;
+      }
+
+      if (cover_url) {
+        updateBook.cover_url = cover_url;
+      }
+
+      return knex('books')
+        .update(updateBook)
+        .where('id', id);
+    })
+    .then(rows => {
+      const book = rows[0];
+      res.send(book);
     })
     .catch(err => {
       next(err);
     })
 })
 
+router.delete('/books/:id', (req, res, next) => {
+  const id = parseInt(req.params.id);
+
+  if (Number.isNaN(id)) {
+    return next();
+  }
+
+  let book;
+
+  knex('books')
+    .where('id', id)
+    .first()
+    .then(row => {
+      book = row
+      return knex('books')
+        .del()
+        .where('id', id);
+    })
+    .then(function() {
+      res.send(book);
+    })
+
+
+})
 
 
 module.exports = router;
