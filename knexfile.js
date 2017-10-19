@@ -8,7 +8,7 @@ module.exports = {
       directory: __dirname + '/migrations'
     },
     seeds: {
-      directory: __dirname + '/seeds/development'
+      directory: __dirname + '/seeds'
     }
   },
 
@@ -19,7 +19,7 @@ module.exports = {
       directory: __dirname + '/migrations'
     },
     seeds: {
-      directory: __dirname + '/seeds/test'
+      directory: __dirname + '/seeds'
     }
   },
 
