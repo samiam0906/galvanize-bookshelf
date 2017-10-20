@@ -2,7 +2,6 @@
 
 const express = require('express');
 const knex = require('../knex')
-// const humps = require(`humps`);
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
